@@ -1,5 +1,3 @@
-//ils display
-
 //ILS program
 
 function getDistance(lat1, lon1, lat2, lon2) {
@@ -116,10 +114,11 @@ function displayDeviations() {
   locdev = clamp(-computeLocDeviation(a[0], a[1], b[0], b[1])*20, -250, 250);
   gsdev = clamp(3*computeSlopeDeviation(Object.values(geofs.api.flatRunwayTerrainProviderInstance.regions)[0].referenceElevation, a[0], a[1], b[0], b[1], (geofs.animation.values.altitudeMeters - 4)), -500, 500);
 }
-
+//ils display
 let ilshead = 0; // will set this to geofs.animation.values.heading360 later
 let locdev = 0;
 let gsdev = 0;
+let traffic = Object.values(multiplayer.visibleUsers)
 
 class ILSsim {
 	constructor(resX, resY, sizeX, sizeY) {
@@ -309,6 +308,14 @@ class ILSsim {
       // console.log([x1, y1, x2, y2, c3]); //For debugging
       return [x1, y1, x2, y2];
     }
+
+    function getTrafficIndicator(direction, distance) {
+      let directionRad = Math.PI*(direction / 180);
+      let origin = [w-w/1.9, h-h/2];
+      let x1 = origin[0]+distance*Math.sin(directionRad);
+      let y1 = origin[1]+distance*Math.cos(directionRad);
+      return [x1,y1];
+    }
     
     let heading = ilshead;
 		let w = this.Display.Width;
@@ -320,8 +327,10 @@ class ILSsim {
     this.MakeLine("#e600ff", w-w/1.9, h-h/2, w-w/1.9 + Math.sin(Math.PI*(heading/180))*300, h-h/2 - Math.cos(Math.PI*(heading/180))*300);
     this.MakeLine("#e600ff", w-w/1.9, h-h/2, w-w/1.9 - Math.sin(Math.PI*(heading/180))*300, h-h/2 + Math.cos(Math.PI*(heading/180))*300);
     this.MakeCircle("black", "black", w-w/1.9, h-h/2, 100);
-    //localizer line
-
+    //traffic
+traffic.forEach(function(e){
+display.MakeCircle("black", "blue", getTrafficIndicator(getBearing(e.referencePoint.lla[0], e.referencePoint.lla[1], geofs.aircraft.instance.llaLocation[0],geofs.aircraft.instance.llaLocation[1]),e.distance/100)[0], getTrafficIndicator(getBearing(e.referencePoint.lla[0], e.referencePoint.lla[1], geofs.aircraft.instance.llaLocation[0],geofs.aircraft.instance.llaLocation[1]),e.distance/100)[1], 5)
+    })
 //aircraft indicator
     this.MakeLine("yellow", w-w/1.9, h-h/2 + 20, w-w/1.9 + 60, h-h/2 + 20);
     this.MakeLine("yellow", w-w/1.9, h-h/2 +20, w-w/1.9 - 60, h-h/2 + 20);
@@ -356,6 +365,7 @@ display.SetupEventHandler();
 display.Draw();
 
 ilsInterval = setInterval(function(){
+  traffic = Object.values(multiplayer.visibleUsers);
   runway = getNearestRunway();
   ilshead = getRwHeading()-geofs.animation.values.heading360;
   displayDeviations()
