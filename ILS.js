@@ -114,7 +114,7 @@ function displayDeviations() {
   a = getRwThreshold()
   b = geofs.aircraft.instance.llaLocation
   locdev = clamp(-computeLocDeviation(a[0], a[1], b[0], b[1])*20, -250, 250);
-  gsdev = clamp(3*computeSlopeDeviation(geofs.api.flatRunwayTerrainProviderInstance.regions[Object.values(geofs.runways.nearRunways)[0].id].referenceElevation, a[0], a[1], b[0], b[1], (geofs.animation.values.altitudeMeters - 4)), -500, 500);
+  gsdev = clamp(3*computeSlopeDeviation(Object.values(geofs.api.flatRunwayTerrainProviderInstance.regions)[0].referenceElevation, a[0], a[1], b[0], b[1], (geofs.animation.values.altitudeMeters - 4)), -500, 500);
 }
 
 let ilshead = 0; // will set this to geofs.animation.values.heading360 later
