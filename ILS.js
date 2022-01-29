@@ -329,7 +329,7 @@ class ILSsim {
     this.MakeCircle("black", "black", w - w / 1.9, h - h / 2, 100);
     //traffic
     traffic.forEach(function(e) {
-      display.MakeCircle("black", "blue", getTrafficIndicator(getBearing(e.referencePoint.lla[0], e.referencePoint.lla[1], geofs.aircraft.instance.llaLocation[0], geofs.aircraft.instance.llaLocation[1]), e.distance / 100)[0], getTrafficIndicator(getBearing(e.referencePoint.lla[0], e.referencePoint.lla[1], geofs.aircraft.instance.llaLocation[0], geofs.aircraft.instance.llaLocation[1]), e.distance / 100)[1], 5)
+      display.MakeCircle("black", "blue", getTrafficIndicator(geofs.animation.values.heading+getBearing(e.referencePoint.lla[0], e.referencePoint.lla[1], geofs.aircraft.instance.llaLocation[0], geofs.aircraft.instance.llaLocation[1]), e.distance / 100)[0], getTrafficIndicator(geofs.animation.values.heading+getBearing(e.referencePoint.lla[0], e.referencePoint.lla[1], geofs.aircraft.instance.llaLocation[0], geofs.aircraft.instance.llaLocation[1]), e.distance / 100)[1], 5)
     })
     //aircraft indicator
     this.MakeLine("yellow", w - w / 1.9, h - h / 2 + 20, w - w / 1.9 + 60, h - h / 2 + 20);
