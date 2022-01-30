@@ -1,3 +1,35 @@
+
+//Terrain Radar
+let terrainPoints = [];
+function getRadar(resolution) {
+  if (terrainPoints.length > resolution) {
+  terrainPoints = [];
+  }
+  for (let i = 0; i < 7000; i++) {
+    let distance = -i % 300;
+    let directionStart = geofs.animation.values.heading - 90
+    let direction = directionStart + i /40
+    let x1 = geofs.aircraft.instance.llaLocation[0];
+    let y1 = geofs.aircraft.instance.llaLocation[1];
+    let x2 = distance*Math.sin(Math.PI*direction/180);
+    let y2 = distance*Math.cos(Math.PI*direction/180);
+    terrainPoints.push([distance, Math.PI*((i/40  - 90)/180), geofs.getGroundAltitude(x1+x2,y1+y2).location[2] + 200]);
+  }
+  
+}
+
+let toggleRadar = 0
+
+function radar(){
+if (toggleRadar == 0){
+  toggleRadar = 1;
+}
+  else{
+    toggleRadar = 0;
+  }
+}
+
+
 //ILS program
 
 function getDistance(lat1, lon1, lat2, lon2) {
@@ -356,6 +388,26 @@ class ILSsim {
     this.MakeCircle("black", "white", w - w / 1.9 + Math.cos(Math.PI * (heading / 180)) * 75, h - h / 2 + Math.sin(Math.PI * (heading / 180)) * 75, 8);
     this.MakeCircle("black", "white", w - w / 1.9 + Math.cos(Math.PI * (heading / 180)) * 200, h - h / 2 + Math.sin(Math.PI * (heading / 180)) * 200, 8);
     this.MakeLine("#e600ff", getDeviation()[0], getDeviation()[1], getDeviation()[2], getDeviation()[3]);
+    //terrain radar
+    if (toggleRadar == 1) {
+    terrainPoints.forEach(function(e){
+      let elevation = geofs.animation.values.altitudeMeters;
+      if (geofs.animation.values.haglMeters > 1000){
+        display.MakeCircle("green", "green", w - w / 1.9 +e[0]*Math.sin(e[1]), h - h / 2 + e[0]*Math.cos(e[1]), 10);
+      }
+      else{
+      if (e[2] < elevation - 1000){
+      display.MakeCircle("red", "red", w - w / 1.9 +e[0]*Math.sin(e[1]), h - h / 2 + e[0]*Math.cos(e[1]), 10);
+      }
+      if (e[2] > elevation - 1000 && e[2] < elevation){
+        display.MakeCircle("yellow", "yellow", w - w / 1.9 +e[0]*Math.sin(e[1]), h - h / 2 + e[0]*Math.cos(e[1]), 10);
+      }
+      if (e[2] > elevation) {
+        display.MakeCircle("green", "green", w - w / 1.9 +e[0]*Math.sin(e[1]), h - h / 2 + e[0]*Math.cos(e[1]), 10);
+      }
+      }
+    })
+    }
   };
 
 }
@@ -375,6 +427,7 @@ rwDistances.push(getDistance(e.location[0], e.location[1], geofs.aircraft.instan
       minKey = i;
     }
   })
+      getRadar(100);
   traffic = Object.values(multiplayer.visibleUsers);
   runway = getNearestRunway();
   ilshead = getRwHeading() - geofs.animation.values.heading360;
