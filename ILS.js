@@ -96,15 +96,15 @@ function getRwThreshold() {
     let runwayThreshold = [runwayThresholdY, runwayThresholdX, 0];
     return runwayThreshold;
   }
-    else {
-return [0,0];
-    }
-  }
 
   else {
     let runwayThreshold = runway.location
     return runwayThreshold;
   }
+  }
+    else {
+return [0,0];
+    }
 }
 
 
