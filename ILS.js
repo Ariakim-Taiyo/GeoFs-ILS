@@ -7,7 +7,7 @@ function getRadar(resolution) {
   }
   for (let i = 0; i < 500; i++) {
     let distance = i/8 % 3;
-    let directionStart = geofs.animation.values.heading - 90
+    let directionStart = geofs.animation.values.heading + 90
     let direction = directionStart - i /5
     let x1 = geofs.aircraft.instance.llaLocation[0];
     let y1 = geofs.aircraft.instance.llaLocation[1];
