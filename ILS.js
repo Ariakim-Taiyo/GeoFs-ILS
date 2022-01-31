@@ -81,6 +81,7 @@ return 0;
 }
 
 function getRwThreshold() {
+  if (Object.values(geofs.runways.nearRunways).length != 0){
   let defaultRunway = runway.heading;
   let aircraftHeading = geofs.animation.values.heading;
 
@@ -94,6 +95,10 @@ function getRwThreshold() {
     let runwayThresholdY = y1 + y2;
     let runwayThreshold = [runwayThresholdY, runwayThresholdX, 0];
     return runwayThreshold;
+  }
+    else {
+return [0,0];
+    }
   }
 
   else {
