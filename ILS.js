@@ -62,6 +62,7 @@ function computeSlopeDeviation(ae, alt, alg, lt, lg, a) {
 //runway side detection from autoland 1.0
 
 function getRwHeading() {
+  if (Object.values(geofs.runways.nearRunways).length != 0){
   let defaultRunway = runway.heading;
   let aircraftHeading = geofs.animation.values.heading360
 
@@ -73,6 +74,10 @@ function getRwHeading() {
   else {
     return defaultRunway;
   }
+  }
+else {
+return 0;
+}
 }
 
 function getRwThreshold() {
