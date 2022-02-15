@@ -419,12 +419,12 @@ class ILSsim {
   };
 
 }
-let display = new ILSsim(1000, 1000, "250px", "250px");
-display.SetupCanvas();
-display.SetupEventHandler();
-display.Draw();
+
+let display
 let rwDistances = [];
 let minKey = 0;
+
+function ilsIntervalStart() {
 ilsInterval = setInterval(function() {
   rwDistances = []
   Object.values(geofs.runways.nearRunways).forEach(function(e){
@@ -442,7 +442,48 @@ rwDistances.push(getDistance(e.location[0], e.location[1], geofs.aircraft.instan
   displayDeviations()
   display.rDraw()
 }, 200)
+};
+
 
 let terrainInterval = setInterval(function(){
   getRadar(100)
 }, 1000)
+
+let array = []
+
+function destroyDisplays() {
+  array = []
+  Object.values(document.getElementsByTagName("canvas")).forEach(function(e){if (e.width == 1000) array.push(e)})
+  array.forEach(function(e){e.remove()})
+}
+
+let hide = false
+function togglePanel(){
+  if (!hide){
+ display = new ILSsim(1000, 1000, "250px", "250px");
+display.SetupCanvas();
+display.SetupEventHandler();
+display.Draw();
+    ilsIntervalStart()
+  hide = true;
+  }
+  else {
+    destroyDisplays()
+    hide = false;
+  }
+};
+
+// Panel Code
+let ilspanel = document.createElement("div");
+ilspanel.innerHTML = '<ul class="geofs-list geofs-toggle-panel geofs-autoland-list geofs-preferences" data-noblur="true" data-onshow="{geofs.initializePreferencesPanel()}" data-onhide="{geofs.savePreferencesPanel()}"><style>#MainDIV {position: absolute;left: 0px;top: 0px;background-color: white;border: 5px solid #000000;text-align: center;padding: 0px 10px 10px 10px;}#DIVtitle {color: black;font-family: monospace;font-weight: bold;font-size: 20px;}p {color: black;font-family: monospace;font-weight: bold;}.button {display: inline-block;padding: 3px 24px;font-size: 15px;cursor: pointer;text-align: center;text-decoration: none;outline: none;color: black;background-color: #ffc107;border: none;border-radius: 1px;box-shadow: 0 0px #999;}.button2 {display: inline-block}.button:hover {background-color: #536dfe}.button:active {opacity: 0.6;}.button3 {display: inline-block;padding: 3px 24px;font-size: 15px;cursor: pointer;text-align: center;text-decoration: none;outline: none;color: #fff;background-color: #536dfe;border: none;border-radius: 1px;box-shadow: 0 0px #999;}.button4 {display: inline-block;padding: 3px 24px;font-size: 15px;cursor: pointer;text-align: center;text-decoration: none;outline: none;color: #fff;background-color: red;border: none;border-radius: 1px;box-shadow: 0 0px #999;}</style><div id="MainDIV"><p id="DIVtitle">ILS Interface</p><p>Engine Controls:</p><button class = "button" onclick = "togglePanel()">Toggle ILS panel</button><button class = "button" onclick = "radar()">Toggle Terrain Radar</button></div></ul>'
+
+let sidePanel = document.getElementsByClassName("geofs-ui-left")[0]
+document.getElementsByClassName("geofs-ui-left")[0].appendChild(ilspanel)
+
+// Toggle Button Code
+let buttonDiv = document.createElement("div");
+buttonDiv.innerHTML = '<button class="mdl-button mdl-js-button geofs-f-standard-ui geofs-mediumScreenOnly" data-toggle-panel=".geofs-autoland-list" data-tooltip-classname="mdl-tooltip--top" id="ilsbutton" tabindex="0" data-upgraded=",MaterialButton">ILS</button>'
+document.body.appendChild(buttonDiv);
+document.getElementsByClassName("geofs-ui-bottom")[0].appendChild(buttonDiv);
+let element = document.getElementById("ilsbutton");
+document.getElementsByClassName("geofs-ui-bottom")[0].insertBefore(element, buttonDiv);
