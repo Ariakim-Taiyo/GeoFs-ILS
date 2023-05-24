@@ -13,7 +13,7 @@ function getRadar(resolution) {
     let y1 = geofs.aircraft.instance.llaLocation[1];
     let x2 = distance*Math.sin(Math.PI*direction/180);
     let y2 = distance*Math.cos(Math.PI*direction/180);
-    terrainPoints.push([distance*100, Math.PI*((i/5  - 225)/180), geofs.getGroundAltitude(x1+x2,y1+y2).location[2]]);
+    terrainPoints.push([distance*100, Math.PI*((i/5  - 225)/180), geofs.getGroundAltitude([x1+(x2 * 1), y1+(y2 * 1)]).location[2]]);
   }
   
 }
